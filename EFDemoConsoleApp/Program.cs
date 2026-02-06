@@ -49,6 +49,8 @@ var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 // For this to work, you must first run:
 // Add-Migration InitialCreate
 // The Factory in AppDbContextFactory.cs enables design-time support for migrations.
+// The Factory is not needed in ASP.NET Core because the runtime can create the DbContext from the registered services,
+// but in console app we need it to run migrations from Package Manager Console.
 // Proceed to READ 11 in \Data\AppDbContextFactory.cs.
 await context.Database.MigrateAsync();
 
