@@ -23,6 +23,11 @@ public class AppDbContext : DbContext
     // Proceed to READ 8 in \Models\User.cs
     public DbSet<User> Users { get; set; }
 
+    // New DbSet for Post entity
+    // This represents a one-to-many relationship: One User has many Posts
+    // This can be commented out and added back for testing how migrations work when adding new entities and relationships.
+    public DbSet<Post> Posts { get; set; }
+
     // READ 9.
     // OnModelCreating configures the database schema using Fluent API.
     // This defines how the User model maps to the database table.
@@ -37,6 +42,22 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
             entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
             entity.HasIndex(e => e.Email).IsUnique();
+        });
+
+        // Can be commented out and added back for testing how migrations work when adding new entities.
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Content).IsRequired();
+
+            // Define the foreign key relationship: Post.UserId -> User.Id
+            // Can be commented out and added back for testing how migrations work when adding new relationships.
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
